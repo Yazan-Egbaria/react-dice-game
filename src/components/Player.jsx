@@ -1,6 +1,8 @@
-const Player = ({ name, score, roundScore }) => {
+const Player = ({ name, score, roundScore, isActive }) => {
   return (
-    <div className="flex min-h-screen flex-col justify-between py-16">
+    <div
+      className={`flex min-h-screen w-full flex-col items-center justify-between bg-gradient-to-t from-emerald-800 to-emerald-100 py-16 ${isActive ? "opacity-100" : "opacity-25"}`}
+    >
       <header
         id="playerHeader"
         className="flex flex-col items-center justify-center font-bold"
@@ -13,7 +15,7 @@ const Player = ({ name, score, roundScore }) => {
 
       <div
         id="currentScore"
-        className="flex flex-col items-center justify-center gap-1 rounded bg-emerald-400 p-8 text-white"
+        className="flex w-fit flex-col items-center justify-center gap-1 rounded bg-emerald-400 p-8 text-white"
       >
         <h3 className="text-xl font-bold">Current</h3>
         <span className="text-xl font-bold">{roundScore}</span>

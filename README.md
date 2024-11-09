@@ -17,4 +17,5 @@
 ## Planning
 
 > The game has 2 players, playing in rounds.
->> We'll need an array of 2 objects
+>
+> > We'll need a data of an array of 2 objects, each one of the objects will have a **id**, **name**, **score**, **roundScore**.
