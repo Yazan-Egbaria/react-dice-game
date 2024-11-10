@@ -96,3 +96,8 @@ const players = [
 4. Player 1 decides to Hold, their round score is added to their global score, and it’s Player 2’s turn.
 5. After several turns, one player reaches the winning score which is **100**.
 6. An alert is shown declaring the winner, and the game stops.
+
+## Bugs & Challenges
+
+- The game works well, except for the **score** and **roundScore**, they don't render in the UI at the first moment of a function or a handle being called!
+- They is a minor bug that I tried to solve, but couldn't at the end, the bug is when a player reaches a score above 100, he doesnt immediately win, it will require him to **hold** twice
