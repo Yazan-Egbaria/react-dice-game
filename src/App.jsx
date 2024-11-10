@@ -10,6 +10,14 @@ export default function App() {
   const [activeId, setActiveId] = useState(playerOne.id);
   const [currentDices, setCurrentDices] = useState(() => [dices[0], dices[1]]);
   const [areDicesRolled, setAreDicesRolled] = useState(false);
+  const [roundScore, setRoundScore] = useState({
+    1: players[0].roundScore,
+    2: players[1].roundScore,
+  });
+  const [score, setScore] = useState({
+    1: players[0].score,
+    2: players[1].score,
+  });
 
   const handleNewGame = () => {
     setActiveId(playerOne.id);
@@ -17,29 +25,79 @@ export default function App() {
       player.score = 0;
       player.roundScore = 0;
     });
+    setCurrentDices(() => [dices[0], dices[1]]);
+    setAreDicesRolled(false);
   };
 
-  const rollDice = () => {};
+  const rollDice = () => {
+    setAreDicesRolled(true);
 
-  const handleIsActive = () => {
+    const randomDices = [
+      dices[Math.floor(Math.random() * dices.length)],
+      dices[Math.floor(Math.random() * dices.length)],
+    ];
+    setCurrentDices(randomDices);
+
+    const randomDicesSum = randomDices.reduce((acc, currentRandomDice) => {
+      return currentRandomDice.num + acc;
+    }, 0);
+
+    setRoundScore((prevRoundScore) => {
+      const updatedRoundScore = prevRoundScore[activeId] + randomDicesSum;
+
+      const playerIndex = players.findIndex((player) => player.id === activeId);
+      players[playerIndex].roundScore = updatedRoundScore;
+
+      return {
+        ...prevRoundScore,
+        [activeId]: updatedRoundScore,
+      };
+    });
+  };
+
+  const holdTurns = () => {
     setActiveId((prev) =>
       prev === playerOne.id ? playerTwo.id : playerOne.id,
     );
+
+    setScore((prevScore) => {
+      const updatedScore = prevScore[activeId] + roundScore[activeId];
+
+      const playerIndex = players.findIndex((player) => player.id === activeId);
+      players[playerIndex].score = updatedScore;
+
+      return {
+        ...prevScore,
+        [activeId]: updatedScore,
+      };
+    });
+
+    setRoundScore((prevRoundScore) => {
+      return {
+        ...prevRoundScore,
+        [activeId]: 0,
+      };
+    });
   };
 
   const btnDetails = [
     { text: "New Game", btnFn: handleNewGame },
     { text: "Roll Dice", btnFn: rollDice },
-    { text: "Hold", btnFn: handleIsActive },
+    { text: "Hold", btnFn: holdTurns },
   ];
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-emerald-800 to-emerald-100">
-      <div className="container relative mx-auto flex min-h-screen items-center justify-evenly">
+      <div
+        id="mainContainer"
+        className="container relative mx-auto flex min-h-screen items-center justify-evenly"
+      >
         {players.map((player) => {
           return (
             <Player
               key={player.name}
+              roundScore={roundScore[player.id]}
+              score={score[player.id]}
               {...player}
               isActive={activeId === player.id}
             />
@@ -50,10 +108,12 @@ export default function App() {
           id="btnsAndDices"
           className="absolute flex flex-col items-center justify-center gap-8"
         >
-          <div className="flex flex-col gap-2">
+          <div id="dices" className="flex flex-col gap-2">
             {areDicesRolled &&
-              currentDices.map((currDice) => {
-                return <Dice key={currDice.id} src={currDice.src} />;
+              currentDices.map((currDice, index) => {
+                return (
+                  <Dice key={`${currDice.id}-${index}`} src={currDice.src} />
+                );
               })}
           </div>
 
