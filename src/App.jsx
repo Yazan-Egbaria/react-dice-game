@@ -19,14 +19,26 @@ export default function App() {
     2: players[1].score,
   });
 
+  function endGame() {
+    if (score[activeId] >= 100) {
+      alert(
+        `${players[activeId].name} has won the game with a score of ${score[activeId]}`,
+      );
+    }
+  }
+
   const handleNewGame = () => {
     setActiveId(playerOne.id);
-    players.forEach((player) => {
-      player.score = 0;
-      player.roundScore = 0;
-    });
     setCurrentDices(() => [dices[0], dices[1]]);
     setAreDicesRolled(false);
+    setRoundScore({
+      1: 0,
+      2: 0,
+    });
+    setScore({
+      1: 0,
+      2: 0,
+    });
   };
 
   const rollDice = () => {
@@ -78,6 +90,8 @@ export default function App() {
         [activeId]: 0,
       };
     });
+
+    endGame();
   };
 
   const btnDetails = [
