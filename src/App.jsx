@@ -21,9 +21,21 @@ export default function App() {
 
   function endGame() {
     if (score[activeId] >= 100) {
+      const winner = players.find((player) => player.id === activeId);
       alert(
-        `${players[activeId].name} has won the game with a score of ${score[activeId]}`,
+        `${winner.name} has won the game with a score of ${score[activeId]}`,
       );
+      setActiveId(playerOne.id);
+      setCurrentDices(() => [dices[0], dices[1]]);
+      setAreDicesRolled(false);
+      setRoundScore({
+        1: 0,
+        2: 0,
+      });
+      setScore({
+        1: 0,
+        2: 0,
+      });
     }
   }
 
@@ -55,15 +67,25 @@ export default function App() {
     }, 0);
 
     setRoundScore((prevRoundScore) => {
-      const updatedRoundScore = prevRoundScore[activeId] + randomDicesSum;
-
       const playerIndex = players.findIndex((player) => player.id === activeId);
-      players[playerIndex].roundScore = updatedRoundScore;
 
-      return {
-        ...prevRoundScore,
-        [activeId]: updatedRoundScore,
-      };
+      if (randomDices[0].num === 6 && randomDices[1].num === 6) {
+        players[playerIndex].roundScore = 0;
+        setActiveId((prev) => {
+          return prev === playerOne.id ? playerTwo.id : playerOne.id;
+        });
+        return {
+          ...prevRoundScore,
+          [activeId]: 0,
+        };
+      } else {
+        const updatedRoundScore = prevRoundScore[activeId] + randomDicesSum;
+        players[playerIndex].roundScore = updatedRoundScore;
+        return {
+          ...prevRoundScore,
+          [activeId]: updatedRoundScore,
+        };
+      }
     });
   };
 
